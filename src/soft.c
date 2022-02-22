@@ -345,7 +345,7 @@ int mirisdr_set_soft(mirisdr_dev_t *p)
 //    }
 
 #if MIRISDR_DEBUG >= 1
-    fprintf( stderr,"sel:%d %x ",i,band_select[i]);
+    fprintf( stderr,"sel:%d %x ",i,switch_plan.band_select_word);
     fprintf( stderr,"freq: %.2f MHz (offset: %.2f MHz), n: %lu, fraction: %lu/%lu\n",
             ((double) n + (double) frac / (double) thresh) * 96.0 / (double) lo_div,
             (double) offset / 1.0e6, (long unsigned)n,
@@ -454,44 +454,28 @@ uint32_t mirisdr_get_xtal_freq(mirisdr_dev_t *p)
 int mirisdr_set_bandwidth(mirisdr_dev_t *p, uint32_t bw)
 {
     if (!p)
-        goto failed;
+        return -1;
 
-    switch (bw)
-    {
-    case 200000:
-        p->bandwidth = MIRISDR_BW_200KHZ;
-        break;
-    case 300000:
-        p->bandwidth = MIRISDR_BW_300KHZ;
-        break;
-    case 600000:
-        p->bandwidth = MIRISDR_BW_600KHZ;
-        break;
-    case 1536000:
-        p->bandwidth = MIRISDR_BW_1536KHZ;
-        break;
-    case 5000000:
-        p->bandwidth = MIRISDR_BW_5MHZ;
-        break;
-    case 6000000:
-        p->bandwidth = MIRISDR_BW_6MHZ;
-        break;
-    case 7000000:
+    p->bandwidth = MIRISDR_BW_8MHZ;
+
+    if(bw <= 7000000)
         p->bandwidth = MIRISDR_BW_7MHZ;
-        break;
-    case 8000000:
-        p->bandwidth = MIRISDR_BW_8MHZ;
-        break;
-    default:
-        fprintf(stderr, "unsupported bandwidth: %u Hz\n", bw);
-        goto failed;
-    }
+    if(bw <= 6000000)
+        p->bandwidth = MIRISDR_BW_6MHZ;
+    if(bw <= 5000000)
+        p->bandwidth = MIRISDR_BW_5MHZ;
+    if(bw <= 1536000)
+        p->bandwidth = MIRISDR_BW_1536KHZ;
+    if(bw <= 600000)
+        p->bandwidth = MIRISDR_BW_600KHZ;
+    if(bw <= 300000)
+        p->bandwidth = MIRISDR_BW_300KHZ;
+    if(bw <= 200000)
+        p->bandwidth = MIRISDR_BW_200KHZ;
 
     int r = mirisdr_set_soft(p);
     r += mirisdr_set_gain(p); // restore gain
     return r;
-
-    failed: return -1;
 }
 
 uint32_t mirisdr_get_bandwidth(mirisdr_dev_t *p)
