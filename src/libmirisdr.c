@@ -151,12 +151,7 @@ int mirisdr_open (mirisdr_dev_t **p, uint32_t index) {
 
     dev->hw_flavour = MIRISDR_HW_DEFAULT;
 
-    /* ISOC is more stable but works only on Unix systems */
-#if !defined (_WIN32) || defined(__MINGW32__)
-    dev->transfer = MIRISDR_TRANSFER_ISOC;
-#else
     dev->transfer = MIRISDR_TRANSFER_BULK;
-#endif
 
     mirisdr_adc_init(dev);
     mirisdr_set_hard(dev);
