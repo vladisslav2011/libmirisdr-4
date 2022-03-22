@@ -467,15 +467,24 @@ int mirisdr_set_bandwidth(mirisdr_dev_t *p, uint32_t bw)
     if(bw <= 1536000)
     {
         p->bandwidth = MIRISDR_BW_1536KHZ;
-        p->if_freq = MIRISDR_IF_1620KHZ;
+        if(p->rate >= 5000000)
+            p->if_freq = MIRISDR_IF_1620KHZ;
     }
     if(bw <= 600000)
+    {
         p->bandwidth = MIRISDR_BW_600KHZ;
+        p->if_freq = MIRISDR_IF_450KHZ;
+    }
     if(bw <= 300000)
+    {
         p->bandwidth = MIRISDR_BW_300KHZ;
+        p->if_freq = MIRISDR_IF_450KHZ;
+    }
     if(bw <= 200000)
+    {
         p->bandwidth = MIRISDR_BW_200KHZ;
-
+        p->if_freq = MIRISDR_IF_450KHZ;
+    }
     int r = mirisdr_set_soft(p);
     r += mirisdr_set_gain(p); // restore gain
     return r;
