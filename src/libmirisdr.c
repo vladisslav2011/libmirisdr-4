@@ -208,6 +208,8 @@ int mirisdr_close (mirisdr_dev_t *p) {
 
     if (p->ctx) libusb_exit(p->ctx);
 
+    if (p->samples) free(p->samples);
+
     free(p);
 
     return 0;

@@ -98,5 +98,7 @@ struct mirisdr_dev {
     int                 driver_active;
     int                 bias;
     int                 reg8;
+    uint8_t             *samples;
+    int                 samples_size;
 };
 
