@@ -206,6 +206,16 @@ static void LIBUSB_CALL _libusb_callback (struct libusb_transfer *xfer) {
 
         if (bytes > 0) mirisdr_feed_async(p, samples, bytes);
 
+        if (xfer->type == LIBUSB_TRANSFER_TYPE_BULK)
+        {
+            if(p->sync_loss_cnt > (int)p->xfer_buf_num)
+            {
+                p->sync_loss_cnt = -p->xfer_buf_num +1;
+                xfer->length = DEFAULT_BULK_BUFFER - 512;
+                fprintf(stderr,"libmirisdr: Sync lost. Trying to synchronize.\n");
+            }else
+                xfer->length = DEFAULT_BULK_BUFFER;
+        }
         /* pokračujeme dalším přenosem */
         if (libusb_submit_transfer(xfer) < 0) {
             fprintf( stderr, "error re-submitting URB on device %u\n", p->index);
@@ -382,6 +392,7 @@ int mirisdr_read_async (mirisdr_dev_t *p, mirisdr_read_async_cb_t cb, void *ctx,
         fprintf( stderr, "auto");
     }
 #endif
+    p->sync_loss_cnt = 0;
     /* použití správného rozhraní které zasílá data - není kritické */
     switch (p->transfer) {
     case MIRISDR_TRANSFER_BULK:
