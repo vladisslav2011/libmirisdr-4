@@ -222,21 +222,21 @@ int mirisdr_get_tuner_gain_mode(mirisdr_dev_t *p)
  */
 int mirisdr_set_mixer_gain(mirisdr_dev_t *p, int gain)
 {
-    p->gain_reduction_mixer = gain;
+    p->gain_reduction_mixer = gain ? 0 : 1;
 
     return mirisdr_set_gain(p);
 }
 
 int mirisdr_set_mixbuffer_gain(mirisdr_dev_t *p, int gain)
 {
-    p->gain_reduction_mixbuffer = gain & 0x03;
+    p->gain_reduction_mixbuffer = (3 - gain / 6) & 0x03;
 
     return mirisdr_set_gain(p);
 }
 
 int mirisdr_set_lna_gain(mirisdr_dev_t *p, int gain)
 {
-    p->gain_reduction_lna = gain;
+    p->gain_reduction_lna = gain ? 0 : 1;
 
     return mirisdr_set_gain(p);
 }
