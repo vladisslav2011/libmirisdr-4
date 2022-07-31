@@ -43,7 +43,9 @@ int mirisdr_set_gain(mirisdr_dev_t *p)
     }
     else if (p->band == MIRISDR_BAND_AM2)
     {
+#if MIRISDR_DEBUG >= 1
         fprintf(stderr, "mirisdr_set_gain: gain_reduction_mixbuffer: %d\n", p->gain_reduction_mixbuffer);
+#endif
         reg1 |= (p->gain_reduction_mixbuffer == 0 ? 0x0 : 0x03) << 10;
     }
     else
