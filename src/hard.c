@@ -53,14 +53,12 @@ int mirisdr_set_hard(mirisdr_dev_t *p)
 	/* automatic choice format */
 	if (p->format_auto == MIRISDR_FORMAT_AUTO_ON)
 	{
-		if (p->rate <= 6048000) {
+		if (p->rate <= 11000000) {
 			p->format = MIRISDR_FORMAT_252_S16;
-		} else if (p->rate <= 8064000) {
+		} else if (p->rate <= 14000000) {
 			p->format = MIRISDR_FORMAT_336_S16;
-		} else if (p->rate <= 9216000) {
-			p->format = MIRISDR_FORMAT_384_S16;
 		} else {
-			p->format = MIRISDR_FORMAT_504_S16;
+			p->format = MIRISDR_FORMAT_384_S16;
 		}
 	}
 
