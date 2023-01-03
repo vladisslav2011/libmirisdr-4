@@ -268,31 +268,21 @@ int mirisdr_set_soft(mirisdr_dev_t *p)
     /* side register, fine tuning */
     frac = (fvco % 96000000UL) / lo_div;
 
-    /* najdeme největší společný dělitel pro thresh a frac */
-    /* We find the greatest common divisor for thresh and frac */
-    for (a = thresh, b = frac; a != 0;)
-    {
-        c = a;
-        a = b % a;
-        b = c;
-    }
-
-    /* dělíme */
-    /* divided */
-    thresh /= b;
-    frac /= b;
-
+    a=(frac>thresh)?frac:thresh;
+    b=a/4095;
+    frac/=b;
+    thresh/=b;
     /* v této části musíme rozlišení snížit na maximální rozsah registru */
     /* In this section we reduce the resolution to the maximum extent registry */
     a = (thresh + 4094) / 4095;
     thresh = (thresh + (a / 2)) / a;
     frac = (frac + (a / 2)) / a;
-
-    rfvco=(96000000UL * (n * thresh * 4096UL + (frac * 4096UL))) / (thresh * 4096UL * lo_div);
+    rfvco=(96000000UL * (n * thresh * 4096UL + frac * 4096UL + afc)) / (thresh * 4096UL * lo_div);
     if(p->freq + offset < rfvco)
         frac --;
-    rfvco=(96000000UL * (n * thresh * 4096UL + (frac * 4096UL + afc))) / (thresh * 4096UL * lo_div);
+    rfvco=(96000000UL * (n * thresh * 4096UL + frac * 4096UL + afc)) / (thresh * 4096UL * lo_div);
     afc = ((p->freq + offset - rfvco) * thresh * 4096UL * lo_div) /96000000UL;
+    afc|=1;
 
     reg3 |= (afc & 4095) << 4;
     reg5 |= (0xFFF & thresh) << 4;
