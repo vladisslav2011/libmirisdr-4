@@ -28,41 +28,57 @@
 //GPIO2 - Broadcast FM notch
 
 hw_switch_freq_plan_t hw_switch_freq_plan_default[] = {
-        {0,    MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf780},
-        {12,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xff80},
-        {30,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf280},
-        {50,   MIRISDR_MODE_VHF, 0, 0, 32, 0xf380},
-        {108,  MIRISDR_MODE_B3,  0, 0, 16, 0xfa80},
-        {250,  MIRISDR_MODE_B3,  0, 0, 16, 0xf680},
-        {259,  6              ,  0, 0, 8,  0xf680},
-        {330,  MIRISDR_MODE_B45, 0, 0, 4,  0xf380},
-        {960,  MIRISDR_MODE_BL,  0, 0, 2,  0xfa80},
-        {2400, -1, 0, 0, 0, 0x0000},
+        {0,    MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf780, -1},
+        {12,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xff80, -1},
+        {30,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf280, -1},
+        {50,   MIRISDR_MODE_VHF, 0, 0, 32, 0xf380, -1},
+        {108,  MIRISDR_MODE_B3,  0, 0, 16, 0xfa80, -1},
+        {250,  MIRISDR_MODE_B3,  0, 0, 16, 0xf680, -1},
+        {259,  6              ,  0, 0, 8,  0xf680, -1},
+        {330,  MIRISDR_MODE_B45, 0, 0, 4,  0xf380, -1},
+        {960,  MIRISDR_MODE_BL,  0, 0, 2,  0xfa80, -1},
+        {2400, -1, 0, 0, 0, 0x0000, -1},
 };
 
 hw_switch_freq_plan_t hw_switch_freq_plan_sdrplay[] = {
-        {0,    MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf580},
-        {12,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf580},
-        {30,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf580},
-        {50,   MIRISDR_MODE_VHF, 0, 0, 32, 0xf180},
-        {112,  MIRISDR_MODE_B3,  0, 0, 16, 0xf580},
-        {250,  MIRISDR_MODE_B3,  0, 0, 16, 0xf480},
-        {261,  6              ,  0, 0, 8,  0xf480},
-        {404,  MIRISDR_MODE_B45, 0, 0, 4,  0xf580},
-        {1000, MIRISDR_MODE_BL,  0, 0, 2,  0xf580},
-        {2400, -1, 0, 0, 0, 0x0000},
+        {0,    MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf780, -1},
+        {12,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xff80, -1},
+        {30,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf280, -1},
+        {50,   MIRISDR_MODE_VHF, 0, 0, 32, 0xf380, -1},
+        {112,  MIRISDR_MODE_B3,  0, 0, 16, 0xfa80, -1},
+        {250,  MIRISDR_MODE_B3,  0, 0, 16, 0xf680, -1},
+        {261,  6              ,  0, 0, 8,  0xf680, -1},
+        {404,  MIRISDR_MODE_B45, 0, 0, 4,  0xf380, -1},
+        {1000, MIRISDR_MODE_BL,  0, 0, 2,  0xfa80, -1},
+        {2400, -1, 0, 0, 0, 0x0000, -1},
 };
 
-hw_switch_freq_plan_t *hw_switch_freq_plan[2] = {
+hw_switch_freq_plan_t hw_switch_freq_plan_purple_modded[] = {
+        {0,    MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf480, 3},
+        {12,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf480, 3},
+        {30,   MIRISDR_MODE_AM,  MIRISDR_UPCONVERT_MIXER_ON, MIRISDR_AM_PORT2, 16, 0xf480, 3},
+        {50,   MIRISDR_MODE_VHF, 0, 0, 32, 0xf080, 3},
+        {112,  MIRISDR_MODE_B3,  0, 0, 16, 0xf480, 3},
+        {250,  MIRISDR_MODE_B3,  0, 0, 16, 0xf480, 3},
+        {261,  6              ,  0, 0, 8,  0xf480, 3},
+        {404,  MIRISDR_MODE_B45, 0, 0, 4,  0xf480, 3},
+        {1000, MIRISDR_MODE_BL,  0, 0, 2,  0xf480, 3},
+        {2400, -1, 0, 0, 0, 0x0000, 3},
+};
+
+hw_switch_freq_plan_t *hw_switch_freq_plan[] = {
         hw_switch_freq_plan_default,
-        hw_switch_freq_plan_sdrplay
+        hw_switch_freq_plan_sdrplay,
+        hw_switch_freq_plan_purple_modded
 };
-
-#define BIAS_GPIO 3
 
 void update_reg_8(mirisdr_dev_t *p)
 {
-    mirisdr_write_reg(p, 0x08, p->reg8|(p->bias?(1<<(BIAS_GPIO+8)):0));
+    int bias_gpio = hw_switch_freq_plan[(int) p->hw_flavour][0].bias_tee_gpio;
+    if(bias_gpio != -1)
+        mirisdr_write_reg(p, 0x08, p->reg8|(p->bias?(1<<(bias_gpio+8)):0));
+    else
+        mirisdr_write_reg(p, 0x08, p->reg8);
 }
 
 int mirisdr_set_soft(mirisdr_dev_t *p)

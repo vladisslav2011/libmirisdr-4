@@ -65,4 +65,5 @@ typedef struct
     int am_port;
     int lo_div;
     uint32_t band_select_word;
+    int bias_tee_gpio;
 } hw_switch_freq_plan_t;
