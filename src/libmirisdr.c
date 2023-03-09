@@ -68,6 +68,7 @@ int mirisdr_open (mirisdr_dev_t **p, uint32_t index) {
     memset(dev, 0, sizeof(*dev));
 
     /* ostatní parametry */
+    dev->_reg0 = dev->_reg1 = dev->_reg2 = dev->_reg3 = dev->_reg4 = dev->_reg5 = dev->_reg6 = dev->_regd = dev->_rege = 0xffffffff;
     dev->index = index;
 
     libusb_init(&dev->ctx);

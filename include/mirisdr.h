@@ -127,6 +127,8 @@ MIRISDR_API int mirisdr_get_lna_gain (mirisdr_dev_t *p);                /* extra
 MIRISDR_API int mirisdr_get_baseband_gain (mirisdr_dev_t *p);           /* extra */
 MIRISDR_API int mirisdr_set_bias (mirisdr_dev_t *p, int bias);          /* extra */
 MIRISDR_API int mirisdr_get_bias (mirisdr_dev_t *p);                    /* extra */
+MIRISDR_API int mirisdr_read_cal(mirisdr_dev_t *p, uint32_t *cal0, uint32_t *cal1, uint32_t *cal2, uint32_t *cal3, uint32_t *cal4, uint32_t *cal5);
+MIRISDR_API int mirisdr_write_cal(mirisdr_dev_t *p, uint32_t cal0, int en0, uint32_t cal1, int en1, uint32_t cal2, int en2, uint32_t cal3, int en3, uint32_t cal4, int en4, uint32_t cal5);
 
 #ifdef __cplusplus
 }

@@ -83,7 +83,7 @@ void update_reg_8(mirisdr_dev_t *p)
 
 int mirisdr_set_soft(mirisdr_dev_t *p)
 {
-    uint32_t reg0 = 0, reg2 = 2, reg5 = 5, reg3 = 3;
+    uint32_t reg0 = 0, reg2 = 2, reg5 = 5, reg3 = 3, regd = 0x0d;
     uint64_t n, thresh, frac, lo_div = 0, fvco = 0, rfvco = 0, offset = 0, afc = 0, a, b, c;
     int i;
 
@@ -239,6 +239,10 @@ int mirisdr_set_soft(mirisdr_dev_t *p)
     case MIRISDR_BW_8MHZ:
         reg0 |= 0x07 << 14;
         break;
+    case MIRISDR_BW_MAX:
+        reg0 |= 0x07 << 14;
+        regd |= (1<<4);
+        break;
     }
 
     /* xtal frekvence - nepodporujeme změnu */
@@ -330,12 +334,35 @@ int mirisdr_set_soft(mirisdr_dev_t *p)
     p->reg8=switch_plan.band_select_word;
     update_reg_8(p);
 
-    mirisdr_write_reg(p, 0x09, 0x0e);
-    mirisdr_write_reg(p, 0x09, reg3);
+    if(p->_reg3 != reg3)
+    {
+        mirisdr_write_reg(p, 0x09, reg3);
+        p->_reg3 = reg3;
+    }
 
-    mirisdr_write_reg(p, 0x09, reg0);
-    mirisdr_write_reg(p, 0x09, reg5);
-    mirisdr_write_reg(p, 0x09, reg2);
+    if(p->_regd != regd)
+    {
+        mirisdr_write_reg(p, 0x09, regd);
+        p->_regd = regd;
+    }
+
+    if(p->_reg0 != reg0)
+    {
+        mirisdr_write_reg(p, 0x09, reg0);
+        p->_reg0 = reg0;
+    }
+
+    if(p->_reg5 != reg5)
+    {
+        mirisdr_write_reg(p, 0x09, reg5);
+        p->_reg5 = reg5;
+    }
+
+    if(p->_reg2 != reg2)
+    {
+        mirisdr_write_reg(p, 0x09, reg2);
+        p->_reg2 = reg2;
+    }
 
 //    if (band_select[i] != 0)
 //    {
@@ -462,8 +489,10 @@ int mirisdr_set_bandwidth(mirisdr_dev_t *p, uint32_t bw)
     if (!p)
         return -1;
 
-    p->bandwidth = MIRISDR_BW_8MHZ;
+    p->bandwidth = MIRISDR_BW_MAX;
 
+    if(bw <= 8000000)
+        p->bandwidth = MIRISDR_BW_8MHZ;
     if(bw <= 7000000)
         p->bandwidth = MIRISDR_BW_7MHZ;
     if(bw <= 6000000)
@@ -519,6 +548,8 @@ uint32_t mirisdr_get_bandwidth(mirisdr_dev_t *p)
         return 7000000;
     case MIRISDR_BW_8MHZ:
         return 8000000;
+    case MIRISDR_BW_MAX:
+        return 14000000;
     }
 
     failed: return -1;
@@ -611,4 +642,55 @@ int mirisdr_set_bias (mirisdr_dev_t *p, int bias)
 int mirisdr_get_bias (mirisdr_dev_t *p)
 {
 	return p->bias;
+}
+
+int mirisdr_read_cal(mirisdr_dev_t *p, uint32_t *cal0, uint32_t *cal1, uint32_t *cal2, uint32_t *cal3, uint32_t *cal4, uint32_t *cal5)
+{
+    uint32_t tmp;
+    int ret=0;
+
+    ret = mirisdr_write_reg(p, 9, 0x1c);
+    usleep(1);
+    ret |= mirisdr_write_reg(p, 9, 0);
+    usleep(1);
+    ret |= mirisdr_read_reg(p, 4, &tmp);
+    if(ret > 0)
+    {
+        *cal0 = tmp & 0x1f;
+        *cal1 = (tmp >> 5) & 0x0f;
+        *cal2 = (tmp >> 9) & 0x01f;
+        *cal3 = (tmp >> 14) & 0x0f;
+        *cal4 = (tmp >> 18) & 0x1f;
+        *cal5 = (tmp >> 23) & 0x07;
+#if MIRISDR_DEBUG >= 1
+        fprintf(stderr,"MSi001 calibration OTP: %u %u %u %u %u %u\n",*cal0,*cal1,*cal2,*cal3,*cal4,*cal5);
+#endif
+        return 0;
+    }
+    return ret;
+}
+
+/*
+    cal0 - Filter bandwidth correction
+    en0 - enable filter bandwidth correction
+    cal1 - L-band gain  correction
+    en1 - enable L-band gain correction
+    cal2 - frequency correction
+    en2 - enable frequency correction (cal2 and cal5)
+    cal3 - downconverter frequency correction
+    en3 - enable downconverter frequency correction
+    cal4 - unknown
+    en4 - enable cal4
+    cal5 - frequency correction
+*/
+
+int mirisdr_write_cal(mirisdr_dev_t *p, uint32_t cal0, int en0, uint32_t cal1, int en1, uint32_t cal2, int en2, uint32_t cal3, int en3, uint32_t cal4, int en4, uint32_t cal5)
+{
+    uint32_t tmp;
+    int ret=0;
+    tmp = 0x0d | ((en0&1) << 4) | ((cal0&0x1f) << 5) | ((en1&1) << 10) | ((cal1&0x0f) << 11);
+    ret = mirisdr_write_reg(p, 9, tmp);
+    tmp = 0x0e | ((en2&1) << 4) | ((cal2&0x1f) << 5) | ((en3&1) << 10) | ((cal3&0x0f) << 11) | ((en4&1) << 16) | ((cal4&0x1f) << 16) | ((cal5&0x07) << 21);
+    ret |= mirisdr_write_reg(p, 9, tmp);
+    return ret;
 }
