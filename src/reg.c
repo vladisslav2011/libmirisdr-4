@@ -44,7 +44,7 @@ int mirisdr_write_reg (mirisdr_dev_t *p, uint8_t reg, uint32_t val) {
 
     if (!p) goto failed;
     if (!p->dh) goto failed;
-
+    if (p->async_status == MIRISDR_ASYNC_FAILED) goto failed;
 #if MIRISDR_DEBUG >= 2
     fprintf( stderr, "write reg: 0x%02x, val 0x%08x\n", reg, val);
 #endif
@@ -59,7 +59,7 @@ int mirisdr_read_reg (mirisdr_dev_t *p, uint8_t reg, uint32_t *val) {
 
     if (!p) goto failed;
     if (!p->dh) goto failed;
-
+    if (p->async_status == MIRISDR_ASYNC_FAILED) goto failed;
 
     int ret = libusb_control_transfer(p->dh, 0xc0, CMD_RREG, reg << 2, 0, (uint8_t*)val, 4, CTRL_TIMEOUT);
 #if MIRISDR_DEBUG >= 2
